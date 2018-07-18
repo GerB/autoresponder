@@ -1,0 +1,27 @@
+{
+    "name": "ger/autoresponder",
+    "type": "phpbb-extension",
+    "description": "Auto reply to new topics",
+    "homepage": "",
+    "version": "1.0.0-dev",
+    "time": "2018-07-18",
+    "license": "GPL-2.0-only",
+    "authors": [
+        {
+            "name": "Ger",
+            "email": "",
+            "homepage": "",
+            "role": ""
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "composer/installers": "~1.0"
+    },
+    "extra": {
+        "display-name": "Auto responder",
+        "soft-require": {
+            "phpbb/phpbb": ">=3.2.0,<3.3.0@dev"
+        }
+    }
+}

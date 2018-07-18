@@ -1,0 +1,9 @@
+services:
+    ger.autoresponder.listener:
+        class: ger\autoresponder\event\main_listener
+        arguments:
+            - '@user'
+            - '@auth'
+            - '@dbal.conn'
+        tags:
+            - { name: event.listener }
