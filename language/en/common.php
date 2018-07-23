@@ -21,8 +21,8 @@ $lang = array_merge($lang, array(
     'AR_MESSAGE_TEMPLATE'				=> 'Template for automated reply',
 	'AR_MESSAGE_TEMPLATE_EXPLAIN'		=> 'Use BBcode (no HTML). The following tokens will be processed: <br>'
                                         . '<b>{topic_title}</b>: Topic title <br>'
-                                        . '<b>{poster_username}</b>: Username of the user that start a new topic <br>'
-                                        . '<b>{ar_username}</b>: Uername of for he user posting the auto-reply <br>'
+                                        . '<b>{poster_username}</b>: Username of the user that starts a new topic <br>'
+                                        . '<b>{ar_username}</b>: Username of for the user posting the auto-reply <br>'
                                         . '<b>{board_url}</b>: Link to your board <br>'
                                         . '<b>{topic_url}</b>: Link to the topic',
 	'AR_USER_ID'						=> 'Autoresponder user id',

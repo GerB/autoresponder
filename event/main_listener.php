@@ -90,7 +90,7 @@ class main_listener implements EventSubscriberInterface
 	{
         $forum_data = $this->get_forum_data($event['forum_id']);
         
-        if (empty($forum_data['ar_user_id']))
+        if ($forum_data === false)
         {
             return false;
         }
@@ -160,7 +160,7 @@ class main_listener implements EventSubscriberInterface
 				WHERE forum_id = ' . (int) $id;
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
-		return empty($row['ar_user_id']) ? false : $row;
+		return (empty($row['ar_user_id']) || empty($row['ar_message_template']) )? false : $row;
 	}
     
  	/**
