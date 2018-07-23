@@ -1,0 +1,14 @@
+<div id="autoresponder_options">
+    <fieldset>
+        <legend>{L_AR_TITLE}</legend>
+    <dl>
+        <dt><label for="ar_user_id">{L_AR_USER_ID}{L_COLON}</label><br /><span>{L_AR_USER_ID_EXPLAIN}</span></dt>
+        <dd><input type="number" id="ar_user_id" name="ar_user_id" value="{AR_USER_ID}" min="0" max="9999" /></dd>
+    </dl>
+    <dl>
+        <dt><label for="ar_message_template">{L_AR_MESSAGE_TEMPLATE}{L_COLON}</label><br /><span>{L_AR_MESSAGE_TEMPLATE_EXPLAIN}</span></dt>
+        <dd><textarea id="ar_message_template" name="ar_message_template" rows="10" cols="70" data-bbcode="true">{AR_MESSAGE_TEMPLATE}</textarea></dd>
+    </dl>
+    <!-- EVENT acp_forums_rules_settings_append -->
+    </fieldset>
+</div>

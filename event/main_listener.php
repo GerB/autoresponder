@@ -24,7 +24,7 @@ class main_listener implements EventSubscriberInterface
     private $user;
 	private $auth;
 	private $db;
-    private $autorespond_user_id = 2;
+	private $request;
     
     /**
 	 * Constructor
@@ -32,21 +32,54 @@ class main_listener implements EventSubscriberInterface
 	 * @param \phpbb\user								$user					User object
 	 * @param \phpbb\auth\auth							$auth					Auth object
 	 * @param \phpbb\db\driver\driver_interface			$db						DB object
+	 * @param \phpbb\request                			$request				Request object
 	 */
-	public function __construct(\phpbb\user $user, \phpbb\auth\auth $auth, \phpbb\db\driver\driver_interface $db)
+	public function __construct(\phpbb\user $user, \phpbb\auth\auth $auth, \phpbb\db\driver\driver_interface $db, \phpbb\request\request_interface $request)
 	{
 		$this->user = $user;
 		$this->auth = $auth;
 		$this->db = $db;
+		$this->request = $request;
 	}
     
 	static public function getSubscribedEvents()
 	{
 		return array(
+			'core.acp_manage_forums_display_form'	=> 'acp_add_form_fields',
+			'core.acp_manage_forums_request_data'	=> 'acp_set_data',
 			'core.posting_modify_submit_post_after'	=> 'post_autorespond_message',
 		);
 	}
 
+    /**
+	 * Set form fields to DB values
+	 *
+	 * @param \phpbb\event\data	$event	Event object
+	 */
+    public function acp_add_form_fields($event)
+    {
+        $this->user->add_lang_ext('ger/autoresponder', 'common');
+        
+        $forum_data = $event['forum_data'];
+        $template_data = $event['template_data'];
+        $template_data['AR_USER_ID'] = (int) $forum_data['ar_user_id'];
+        $template_data['AR_MESSAGE_TEMPLATE'] = $forum_data['ar_message_template'];
+        $event['template_data'] = $template_data;
+        return;
+    }
+    
+    /**
+	 * Set ACP data
+	 *
+	 * @param \phpbb\event\data	$event	Event object
+	 */  
+    public function acp_set_data($event)
+    {
+        $forum_data = $event['forum_data'];        
+        $forum_data['ar_user_id'] = $this->request->variable('ar_user_id', 0);
+        $forum_data['ar_message_template'] = $this->request->variable('ar_message_template', '', true);
+        $event['forum_data'] = $forum_data;
+    }
     
 	/**
 	 * Post a message
@@ -55,7 +88,14 @@ class main_listener implements EventSubscriberInterface
 	 */
 	public function post_autorespond_message($event)
 	{
-        $post_text = 'This message is only a placeholder now for prove of concept';
+        $forum_data = $this->get_forum_data($event['forum_id']);
+        
+        if (empty($forum_data['ar_user_id']))
+        {
+            return false;
+        }
+        
+        $post_text = $this->replace_vars($forum_data['ar_message_template'], $event, $forum_data);
         
         // Only for new topics
         if ($event['mode'] == 'post')
@@ -95,14 +135,14 @@ class main_listener implements EventSubscriberInterface
                 'notify_set'		 => true, // (bool)
                 'notify'			 => true, // (bool)
                 'post_time'			 => 0, // Set a specific time, use 0 to let submit_post() take care of getting the proper time (int)
-                'forum_name'		 => $this->get_forum_name($event['forum_id']), // For identifying the name of the forum in a notification email. (string)    // Indexing
+                'forum_name'		 => $forum_data['forum_name'], // For identifying the name of the forum in a notification email. (string)    // Indexing
                 'enable_indexing'	 => true, // Allow indexing the post? (bool)    // 3.0.6
             );
             
             // Post as designated user and then switch back to original one
             $actual_user_id = $this->user->data['user_id'];
-            $this->switch_user($this->autorespond_user_id);
-            submit_post('reply', $event['post_data']['post_subject'], $this->user->data['username'], POST_NORMAL, $poll, $data);
+            $this->switch_user($forum_data['ar_user_id']);
+            submit_post('reply', 'Re: ' . $event['post_data']['post_subject'], $this->user->data['username'], POST_NORMAL, $poll, $data);
             $this->switch_user($actual_user_id);   
         }    
 	}
@@ -112,14 +152,15 @@ class main_listener implements EventSubscriberInterface
 	 * @param int $id
 	 * @return string
 	 */
-	private function get_forum_name($id)
+	private function get_forum_data($id)
 	{
-		$sql = 'SELECT forum_name
-				FROM ' . FORUMS_TABLE . '
+		$sql = 'SELECT forum_name, ar_user_id, ar_message_template, username
+				FROM ' . FORUMS_TABLE . ' f
+                    JOIN ' . USERS_TABLE . ' u ON f.ar_user_id = u.user_id
 				WHERE forum_id = ' . (int) $id;
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
-		return empty($row['forum_name']) ? '' : $row['forum_name'];
+		return empty($row['ar_user_id']) ? false : $row;
 	}
     
  	/**
@@ -148,4 +189,21 @@ class main_listener implements EventSubscriberInterface
 		
         return true;
 	}
+    
+    
+    /**
+     * Parse message template
+     * @param string $template
+     */
+    private function replace_vars($template, $event, $forum_data)
+    {
+        $tokens = array(
+            '{topic_title}'     => $event['post_data']['post_subject'],
+            '{poster_username}' => $this->user->data['username'],
+            '{ar_username}'     => $forum_data['username'],
+            '{board_url}'       => generate_board_url(),
+            '{topic_url}'       => generate_board_url() . substr($event['redirect_url'], 1),
+        );
+        return str_ireplace(array_keys($tokens), array_values($tokens), $template);
+    }
 }
