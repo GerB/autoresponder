@@ -25,6 +25,7 @@ $lang = array_merge($lang, array(
                                         . '<b>{ar_username}</b>: Username of for the user posting the auto-reply <br>'
                                         . '<b>{board_url}</b>: Link to your board <br>'
                                         . '<b>{topic_url}</b>: Link to the topic',
+	'AR_TITLE'                          => 'Autoresponder settings',
 	'AR_USER_ID'						=> 'Autoresponder user id',
 	'AR_USER_ID_EXPLAIN'				=> 'The id of the user that will be used to post the auto-replies.',
 ));

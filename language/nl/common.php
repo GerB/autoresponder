@@ -26,6 +26,7 @@ $lang = array_merge($lang, array(
                                         . '{ar_username}: Gebruikersnaam van degene die het antwoord plaatst <br>'
                                         . '{board_url}: Link naar je forum <br>'
                                         . '{topic_url}: Link naar het onderwerp <br>',
+	'AR_TITLE'                          => 'Autoresponder instellingen',
 	'AR_USER_ID'						=> 'Autoresponder gebruiker id',
 	'AR_USER_ID_EXPLAIN'				=> 'De id van de gebruiker op wiens naam de automatische antwoorden geplaatst worden.',
 ));
