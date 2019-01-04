@@ -101,12 +101,7 @@ class main_listener implements EventSubscriberInterface
         if ($event['mode'] == 'post')
         {
             // Get correct topic id
-            $redirect_url = $event['redirect_url'];
-            if (strpos($redirect_url, 'sid=') !== false)
-            {
-                $redirect_url = substr($redirect_url, 0, strpos($redirect_url, 'sid='));
-            }
-            $topic_id = str_replace('&amp;t=', '', strstr($redirect_url, '&amp;t='));
+            $topic_id = $event['data']['topic_id'];
             
             // Prep posting
             $poll = $uid = $bitfield = $options = '';
@@ -116,7 +111,7 @@ class main_listener implements EventSubscriberInterface
             $data = array(
                 // General Posting Settings
                 'forum_id'			 => $event['forum_id'], // The forum ID in which the post will be placed. (int)
-                'topic_id'			 => $topic_id, // Post a new topic or in an existing one? Set to 0 to create a new one, if not, specify your topic ID here instead.
+                'topic_id'			 => $event['data']['topic_id'], // Post a new topic or in an existing one? Set to 0 to create a new one, if not, specify your topic ID here instead.
                 'icon_id'			 => false, // The Icon ID in which the post will be displayed with on the viewforum, set to false for icon_id. (int)
                 // Defining Post Options
                 'enable_bbcode'		 => true, // Enable BBcode in this post. (bool)
@@ -126,6 +121,7 @@ class main_listener implements EventSubscriberInterface
                 // Message Body
                 'message'			 => $post_text, // Your text you wish to have submitted. It should pass through generate_text_for_storage() before this. (string)
                 'message_md5'		 => md5($post_text), // The md5 hash of your message
+                'post_checksum'		 => md5($post_text), // The md5 hash of your message
                 // Values from generate_text_for_storage()
                 'bbcode_bitfield'	 => $bitfield, // Value created from the generate_text_for_storage() function.
                 'bbcode_uid'		 => $uid, // Value created from the generate_text_for_storage() function.    

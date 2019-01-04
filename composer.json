@@ -3,8 +3,8 @@
     "type": "phpbb-extension",
     "description": "Auto reply to new topics",
     "homepage": "",
-    "version": "1.0.0-RC1",
-    "time": "2018-08-21",
+    "version": "1.0.0-RC2",
+    "time": "2019-01-04",
     "license": "GPL-2.0-only",
     "authors": [
         {
