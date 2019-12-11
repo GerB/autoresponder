@@ -23,6 +23,7 @@ $lang = array_merge($lang, array(
 	'AR_MESSAGE_TEMPLATE_EXPLAIN'		=> 'Gebruik BBcode (geen HTML). De volgende tokens worden automatisch verwerkt: <br>'
                                         . '{topic_title}: Onderwerptitel <br>'
                                         . '{poster_username}: Gebruikersnaam van degene die het onderwerp opent <br>'
+                                        . '{poster_username_color}: Gebruikerskleur van degene die het onderwerp opent <br>'
                                         . '{ar_username}: Gebruikersnaam van degene die het antwoord plaatst <br>'
                                         . '{board_url}: Link naar je forum <br>'
                                         . '{topic_url}: Link naar het onderwerp <br>',

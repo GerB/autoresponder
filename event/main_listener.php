@@ -194,11 +194,12 @@ class main_listener implements EventSubscriberInterface
     private function replace_vars($template, $event, $forum_data)
     {
         $tokens = array(
-            '{topic_title}'     => $event['post_data']['post_subject'],
-            '{poster_username}' => $this->user->data['username'],
-            '{ar_username}'     => $forum_data['username'],
-            '{board_url}'       => generate_board_url(),
-            '{topic_url}'       => generate_board_url() . substr($event['redirect_url'], 1),
+            '{topic_title}'             => $event['post_data']['post_subject'],
+            '{poster_username}'         => $this->user->data['username'],
+            '{poster_username_color}'   => $this->user->data['user_colour'],
+            '{ar_username}'             => $forum_data['username'],
+            '{board_url}'               => generate_board_url(),
+            '{topic_url}'               => generate_board_url() . substr($event['redirect_url'], 1),
         );
         return str_ireplace(array_keys($tokens), array_values($tokens), $template);
     }
